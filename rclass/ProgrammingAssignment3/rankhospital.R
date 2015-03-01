@@ -1,0 +1,38 @@
+rankhospital <- function(state, outcome, num = "best") {
+        ## Read outcome data
+        data <- read.csv("outcome-of-care-measures.csv", 
+                         colClasses = "character")
+        
+        ## Check that state and outcome are valid
+        if (!is.element(state, data$State)) {
+                stop("invalid state")
+        }
+        if (!is.element(outcome, c("heart attack", "heart failure", "pneumonia"))) {
+                stop("invalid outcome")
+        }
+        
+        ## Return hospital name in that state with the given rank
+        ## 3-day death rate
+        state_data <- data[data$State == state, ]
+        
+        if (outcome == "heart attack") {
+                state_data <- state_data[order(suppressWarnings(as.numeric(state_data[, 11])), state_data[, 2]), ]
+                state_data <- state_data[!is.na(suppressWarnings(as.numeric(state_data[, 11]))), ]
+        } else if (outcome == "heart failure") {
+                state_data <- state_data[order(suppressWarnings(as.numeric(state_data[, 17])), state_data[, 2]), ]
+                state_data <- state_data[!is.na(suppressWarnings(as.numeric(state_data[, 17]))), ]
+        } else {
+                state_data <- state_data[order(suppressWarnings(as.numeric(state_data[, 23])), state_data[, 2]), ]
+                state_data <- state_data[!is.na(suppressWarnings(as.numeric(state_data[, 23]))), ]
+        }
+
+        if (num == "best") {
+                return(state_data[1, 2])
+        } else if (num == "worst") {
+                return(state_data[nrow(state_data), 2])
+        } else if (as.numeric(num) > nrow(state_data)) {
+                return(NA)
+        } else {
+                return(state_data[as.numeric(num), 2])
+        }
+}
