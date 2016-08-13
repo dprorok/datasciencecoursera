@@ -1,5 +1,3 @@
-#ToDo: Create a code book
-
 library(dplyr)
 
 # Download and unzip the dataset if not done so already
