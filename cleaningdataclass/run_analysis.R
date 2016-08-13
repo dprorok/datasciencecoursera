@@ -1,6 +1,8 @@
+#ToDo: Create a code book
+
 library(dplyr)
 
-## Download and unzip the dataset:
+# Download and unzip the dataset if not done so already
 fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 destfile <- "./dataset.zip"
 
@@ -29,8 +31,12 @@ test.labels <- read.table("./UCI HAR Dataset/test/y_test.txt", colClasses="facto
 test.labels$V1 <- mapvalues(test.labels$V1, from = levels(test.labels$V1), to = activity.factor.levels)
 names(test.labels) <- "activity"
 
-# Read in the feature labels.
+# Read in the feature labels. Strip out special characters.
 features <- read.table("./UCI HAR Dataset/features.txt", stringsAsFactors=FALSE)
+features$V2 <- gsub('-mean', 'Mean', features$V2)
+features$V2 <- gsub('-std', 'Std', features$V2)
+features$V2 <- gsub('[-()]', '', features$V2)
+features$V2 <- gsub(',', '.', features$V2)
 
 # Read in the training and test datasets
 test.measurements <- read.table("./UCI HAR Dataset/test/X_test.txt", stringsAsFactors=FALSE)
@@ -77,7 +83,7 @@ cols.mean <- grep("[Mm][Ee][Aa][Nn]", names(complete.dataset))
 cols.std <- grep("[Ss][Tt][Dd]", names(complete.dataset))
 
 # col 1 = subject; col 2 = dataset; col 3 = activity
-# we don't need to know originl dataset, so it is dropped below
+# we don't need to know original dataset, so it is dropped below
 cols.to.extract <- c(1, 3, cols.mean, cols.std)
 cols.to.extract <- sort(cols.to.extract)
 extracted.data <- complete.dataset[,cols.to.extract] 
@@ -91,3 +97,5 @@ tidy.data <- aggregate(extracted.data[,names(extracted.data) != c('subject','act
                        mean);
 
 write.table(tidy.data, "tidy.txt", row.names = FALSE, quote = FALSE)
+
+# Read back in with: data <- read.table("tidy.txt", header = TRUE)
