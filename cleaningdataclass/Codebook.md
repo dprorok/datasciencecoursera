@@ -2,6 +2,8 @@
 This code book summarizes the details for the data in the tidy dataset.
 
 ##Identifiers
+* `subject` - ID number of the person performing the activity.
+     * ID numbers range from 1-30, inclusive.
 * `activity` - A factor indicating which of six possible activities are in progress when measurements are taken. The factor levels are:
      1. WALKING
      2. WALKING_UPSTAIRS
@@ -9,8 +11,6 @@ This code book summarizes the details for the data in the tidy dataset.
      4. SITTING
      5. STANDING
      6. LAYING
-* `subject` - ID number of the person performing the activity.
-     * ID numbers range from 1-30, inclusive.
 
 ##Measurements
 The measurement values in this dataset are **means by activity and subject** of the original data provided in the Human Activity Recognition Using Smartphones Dataset at `http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones`
