@@ -20,10 +20,10 @@ the following steps:
         survive a reimport via read.table.
      4. Combine subject, activity, and measurement columns for test
         and train datasets.
-     5. Merge test and train datasets. **Requirement 1**
-     6. Name the columns. **Requirement 4**
-     7. Map activities to meaningful names. **Requirement 3**
-     8. Sort the dataset.
+     5. Merge test and train datasets. **(Requirement 1)**
+     6. Name the columns. **(Requirement 4)**
+     7. Map activities to meaningful names. **(Requirement 3)**
+     8. Sort the dataset by subject and activity.
      9. Create a new subsetted dataset that only contains measurement
         variables with `std` or `mean` in their names.  (Note: The most
         inclusive approach was taken by including both data where
@@ -35,9 +35,9 @@ the following steps:
         end user of the data to reconstruct data that are missing, but
         desired. As such, all conceivable variables were included with the
         expectation that superfluous ones can be removed by the user if
-        desired.) **Requirement 2**
+        desired.) **(Requirement 2)**
      10. Creates a new tidy dataset that includes the averages of the
-         subsetted variables. **Requirement 5**
+         subsetted variables. **(Requirement 5)**
      11. Tidy dataset is written to the file `tidy.txt` in the working
          directory.
 
