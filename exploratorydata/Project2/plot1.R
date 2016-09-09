@@ -2,6 +2,14 @@
 # 2008? Using the base plotting system, make a plot showing the total PM2.5 
 # emission from all sources for each of the years 1999, 2002, 2005, and 2008.
 
+# Note: The below code has serious signs of "gold-plating", particularly
+# when one considers these are supposed to just be exploratory graphs. I took
+# liberties to play around with all the nifty functions we were introduced to
+# including the ability to monkey with plot paramters and the RColorBrewer
+# package.
+
+library(RColorBrewer)
+
 #Global variables: mostly consists of filenames and locations
 fileURL <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
 dataDirectory <- "ProjectData"
@@ -49,14 +57,21 @@ if(!exists("NEI")) {
 total.emissions <- tapply(NEI$Emissions, NEI$year, FUN=sum)
 total.emissions.millions <- total.emissions / 1000000
 
+year <- as.integer(unlist(dimnames(total.emissions.millions)))
+total.emissions.millions <- as.numeric(total.emissions.millions)
+emissions <- data.frame(cbind(year, total.emissions.millions))
+
+fit <- lm(total.emissions.millions ~ year, data = emissions)
+
 # Plot the results
+cols <- brewer.pal(3, "Set1")
 png(filename = "plot1.png", width = 480, height = 480)
 xticks <- seq(1998, 2009, 1)
 yticks <- seq(3, 8, .5)
-plot(unlist(dimnames(total.emissions.millions)), total.emissions.millions,
-     type = "b",
-     col = "brown",
-     lwd = "3",
+plot(emissions$year, emissions$total.emissions.millions,
+     type = "p",
+     pch = 19,
+     col = cols[1],
      xlab = "Year",
      ylab = "PM2.5 (in millions of tons)",
      main = "United States Total PM2.5 Emissions From All Sources by Year",
@@ -65,4 +80,5 @@ plot(unlist(dimnames(total.emissions.millions)), total.emissions.millions,
      axes = FALSE)
 axis(1, at = xticks, labels = xticks)
 axis(2, at = yticks, labels = yticks)
+abline(fit, lwd = "3", lty = "dashed", col = cols[1])
 dev.off()

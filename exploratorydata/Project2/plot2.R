@@ -2,6 +2,14 @@
 # (fips == 24510) from 1999 to 2008? Use the base plotting system to make a 
 # plot answering this question.
 
+# Note: The below code has serious signs of "gold-plating", particularly
+# when one considers these are supposed to just be exploratory graphs. I took
+# liberties to play around with all the nifty functions we were introduced to
+# including the ability to monkey with plot paramters and the RColorBrewer
+# package.
+
+library(RColorBrewer)
+
 #Global variables: mostly consists of filenames and locations
 fileURL <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
 dataDirectory <- "ProjectData"
@@ -50,16 +58,22 @@ NEI.Baltimore <- subset(NEI, fips=="24510")
 
 # Sum the total emissions by year
 total.emissions <- tapply(NEI.Baltimore$Emissions, NEI.Baltimore$year, FUN=sum)
-total.emissions.thousands <- total.emissions / 1000
+
+year <- as.integer(unlist(dimnames(total.emissions)))
+total.emissions <- as.numeric(total.emissions)
+emissions <- data.frame(cbind(year, total.emissions))
+
+fit <- lm(total.emissions ~ year, data = emissions)
 
 # Plot the results
+cols <- brewer.pal(3, "Set1")
 png(filename = "plot2.png", width = 480, height = 480)
 xticks <- seq(1998, 2009, 1)
 yticks <- seq(1800, 3400, 200)
-plot(unlist(dimnames(total.emissions)), total.emissions,
-     type = "b",
-     col = "brown",
-     lwd = "3",
+plot(emissions$year, emissions$total.emissions,
+     type = "p",
+     pch = 19,
+     col = cols[1],
      xlab = "Year",
      ylab = "PM2.5 (in tons)",
      main = "Baltimore City Total PM2.5 Emissions From All Sources by Year",
@@ -68,4 +82,5 @@ plot(unlist(dimnames(total.emissions)), total.emissions,
      axes = FALSE)
 axis(1, at = xticks, labels = xticks)
 axis(2, at = yticks, labels = yticks)
+abline(fit, lwd = "3", lty = "dashed", col = cols[1])
 dev.off()
