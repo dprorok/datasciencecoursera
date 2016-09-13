@@ -50,6 +50,13 @@ get.data()
 if(!exists("NEI")) {
      NEI <- load.NEIfile()
 }
+if(!exists("SCC")) {
+     SCC <- load.SCCtableFile()
+}
+
+# Find IDs of coal combustion-related sources
+coal.combustion.indices <- grep("Coal", SCC$EI.Sector)
+SCC.indices <- SCC[coal.combustion.indices, "SCC"]
 
 # Subset to just include Baltimore City
 NEI.Baltimore <- subset(NEI, fips=="24510")
@@ -84,7 +91,6 @@ cols.lines <- rep(cols.lines, each = 4)
 cols.points <- rep(cols, each = 4)
 png(filename = "plot3.png", width = 480, height = 480)
 g <- ggplot(emissions, aes(year, total))
-# Explicit call to print() required to output results to file
 print(g + geom_point(color = cols.points, size = 3) + 
            facet_grid(. ~ type) + 
            geom_smooth(method = "lm", 
