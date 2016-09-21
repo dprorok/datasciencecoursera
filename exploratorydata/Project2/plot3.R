@@ -57,8 +57,8 @@ NEI.Baltimore <- subset(NEI, fips=="24510")
 # Subset by type
 point <- subset(NEI.Baltimore, type=="POINT")
 nonpoint <- subset(NEI.Baltimore, type=="NONPOINT")
-onroad <- subset(NEI.Baltimore, type="ON-ROAD")
-nonroad <- subset(NEI.Baltimore, type="NON-ROAD")
+onroad <- subset(NEI.Baltimore, type=="ON-ROAD")
+nonroad <- subset(NEI.Baltimore, type=="NON-ROAD")
 
 # Sum the total emissions by type and year
 point <- tapply(point$Emissions, point$year, FUN=sum)
@@ -92,6 +92,7 @@ print(g + geom_point(color = cols.points, size = 3) +
                        se = FALSE, 
                        aes(color = cols.lines)) + 
            ggtitle("Baltimore City Total PM2.5 Emissions by Type") + 
+           xlab("Year") +
            ylab("PM2.5 (in tons)") +
            theme(legend.position = "none"))
 dev.off()
