@@ -1,5 +1,5 @@
-# Across the United States, how have emissions from coal combustion-related 
-# sources changed from 1999–2008?
+# How have emissions from motor vehicle sources changed from 1999–2008 in 
+# Baltimore City?
 
 library(RColorBrewer)
 library(ggplot2)
@@ -50,38 +50,40 @@ if(!exists("SCC")) {
      SCC <- load.SCCtableFile()
 }
 
-# Find IDs of coal combustion-related sources
-coal.combustion.indices <- grep("Coal", SCC$EI.Sector)
-SCC.codes <- SCC[coal.combustion.indices, "SCC"]
+# Find IDs of motor vehicle sources
+motor.vehicle.indices <- grep("Vehicle", SCC$SCC.Level.Two)
+SCC.codes <- SCC[motor.vehicle.indices, "SCC"]
 
 # Sanity check of which categories have been subsetted
-# unique(SCC[coal.combustion.indices, "EI.Sector"])
+#unique(SCC[motor.vehicle.indices, "SCC.Level.Two"])
 
-# Subset just the coal combustion sources
-NEI.coal.combustion <- NEI[is.element(NEI$SCC, SCC.codes), ]
+# Subset to just include Baltimore City
+NEI.Baltimore <- subset(NEI, fips=="24510")
 
-# Sum the total coal combustion emissions in US by year
-coal.combustion.emissions <- tapply(NEI.coal.combustion$Emissions, 
-                                    NEI.coal.combustion$year, 
-                                    FUN=sum)
-coal.combustion.emissions.thousands <- coal.combustion.emissions / 1000
+# Subset just the motor vehicle sources
+NEI.Baltimore.vehicles <- NEI.Baltimore[is.element(NEI.Baltimore$SCC, SCC.codes), ]
+
+# Sum the motor vehicle emissions in Baltimore by year
+Balt.vehicle.emissions <- tapply(NEI.Baltimore.vehicles$Emissions,
+                                 NEI.Baltimore.vehicles$year,
+                                 FUN=sum)
 
 # Build a data.frame
-year <- as.integer(unlist(dimnames(coal.combustion.emissions.thousands)))
-total <- as.numeric(coal.combustion.emissions.thousands)
+year <- as.integer(unlist(dimnames(Balt.vehicle.emissions)))
+total <- as.numeric(Balt.vehicle.emissions)
 emissions <- data.frame(cbind(year, total))
 
 # Plot the results
 cols <- brewer.pal(4, "Set1")
-png(filename = "plot4.png", width = 480, height = 480)
+png(filename = "plot5.png", width = 480, height = 480)
 g <- ggplot(emissions, aes(year, total))
 print(g + geom_point(color = cols[1], size = 3) + 
            geom_smooth(method = "lm", 
                        linetype = "dashed", 
                        se = FALSE, 
                        aes(color = cols[1])) + 
-           ggtitle("United States Total Coal Combustion-Related PM2.5 Emissions by Year") + 
+           ggtitle("Baltimore City Total Motor Vehicle PM2.5 Emissions by Year") + 
            xlab("Year") +
-           ylab("Coal Combustion-Related PM2.5 (in thousands of tons)") +
+           ylab("Motor Vehicle PM2.5 (in tons)") +
            theme(legend.position = "none"))
 dev.off()
