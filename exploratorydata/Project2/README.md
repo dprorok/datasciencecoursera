@@ -21,3 +21,8 @@
 ### Plot 5
 
 ![plot of Baltimore PM2.5 by Source](plot5.png)
+
+
+### Plot 6
+
+![plot of Baltimore PM2.5 by Source](plot6.png)
